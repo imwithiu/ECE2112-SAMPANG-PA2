@@ -1,87 +1,80 @@
-# ECE-2112-PA-1
+# ECE-2112-PA-2
 
 **Made by: Zechariah Sampang | 2ECE-C**
 
-The content of this repository contains the Programming Assignment 1 for our course "Advance Computer Programming" this S.Y. 2026-2027. This project covers three python problems pertaining to Module 1 - Base Computing with Python.
+The content of this repository contains the Programming Assignment 2 for our course "Advanced Computer Programming and Algorithms" this S.Y. 2026-2027. This project covers three Python problems pertaining to Experiment 2: Numerical Python (NumPy).
 
-# **A. Word Rotation Problem**
+# **A. Reproducible Normalization Problem**
 
-Create a function named `rotate_word()` that accepts a non-empty string. Move the first character of the string to the end while keeping all remaining characters in their original order. Preserve the capitalization of every character.
+Create a reproducible random $5 \times 5$ integer ndarray named X using a fixed seed of 2112 and random integers ranging from 10 to 100. Normalize the complete array using the standard score formula:
 
-Example: `rotate_word("Code")` --> "odeC"
+$Z = \frac{X - \bar{x}}{\sigma}$ where $\bar{x}$ is the mean.
 
-The following methods were used in this problem:
-- `text[1:]` - a string slicing method that extracts all characters starting from index 1 through the end of the string. The colon `:` at the end of the index 0 signifies that it extracts through the end.
-- `text[0]` - an initial character of the string that gets extracted.
-- `+` - the string concatenation operator used to join the substring `text[1:]` and the extracted character of the string `text[0]`.
-
-
-These combined methods effectively defined the function `rotate_word(text)` to move the initial character of the string to the end of the substring.
-The final function for this problem is as follows;
-
+The main Python implementation for this problem is as follows:
 
 ```python
-def rotate_word(text):
-    return text[1:] + text[0]
+import numpy as np
+
+np.random.seed(2112)
+X = np.random.randint(10, 101, size=(5, 5))
+
+mean = X.mean()
+std = np.std(X)
+
+X_normalized = (X - X.mean()) / std
+
+np.save("X_normalized.npy", X_normalized)
 ```
 
-# **B. Username Builder Program**
+# **B. Cubes Divisible by 4 Problem**
 
-Create a function named `make_username()` that accepts two strings: first_name and last_name.
-The function must:
-1. convert all letters to lowercase;
-2. remove all spaces from the first name;
-3. remove all spaces from the last name; and
-4. join the processed first and last names using one period (.).
+Create a $10 \times 10$ ndarray named $C$ containing the cubed values of the first 100 positive integers, then apply a Boolean condition on $C$ to extract all elements that satisfy the divisibility condition and store the filtered values in `div_by_4` (preserving row-major order) and export the result as `div_by_4.npy`[cite: 1].
 
-Example
-`make_username("Ana Maria", "De Leon")` --> "anamaria.deleon"
+### Methods and Functions Used
+- `np.arange(1, 101)` - Generates a 1D array of integers from 1 through 100
+- `integers**3` - Uses the exponentiation operator `**` to compute element-wise cubes ($x^3$)
+- `.reshape(10, 10)` - Reshapes the 100-element 1D array into a $10 \times 10$ two-dimensional matrix.
+- `C[C % 4 == 0]` - Uses Boolean indexing with the modulo operator `%` to select elements where the remainder is 0 when divided by 4 (Divisible by 4).
+- `np.save("div_by_4.npy", div_by_4)` - Saves the resulting filtered array as a binary `.npy` file.
 
-The following functions and methods were used in this problem:
-- `.lower()` - A built-in string method that convert all letters to lowercase.
-- `.replace(" ", "")` - A built-in string method that replaces all spaces in the strings with an empty string.
-- `+ "." +` - the string concatenation operator used to combine the processed first name, a period, and the processed last name.
-- Variable Assignment - a method that reassigns the modified string back to the variable.
-
-
-Combining them all, the final function for this problem is as follows;
-
-
+### Implementation
 ```python
-def make_username(first_name, last_name):
-    first_name = first_name.lower().replace(" ", "")
-    last_name = last_name.lower().replace(" ", "")
-    return first_name + "." + last_name
+import numpy as np
+
+integers = np.arange(1, 101)
+cubed_integers = integers**3
+C = cubed_integers.reshape(10, 10)
+
+div_by_4 = C[C % 4 == 0]
+
+np.save("div_by_4.npy", div_by_4)
 ```
+# **C. Above-Mean Squares Problem**
 
+Create a $6 \times 6$ ndarray named $S$ containing the squares of the first 36 positive integers ($x \in [1, 36]$) in increasing row-major order, then
+Compute the mean of all elements ($\bar{S}$), then use Boolean filtering to select elements strictly greater than the mean. Store these selected values in `above_mean` and export the result as `above_mean.npy`.
 
-# **C. Bookend Swap Problem**
+### Methods and Functions Used
+- `np.arange(1, 37)` - Generates a 1D array of integers from 1 through 36[cite: 2].
+- `bintegers**2` - Computes the element-wise square ($x^2$) of each integer[cite: 1, 2].
+- `np.reshape(S, (6, 6))` - Reshapes the 36-element array into a $6 \times 6$ matrix[cite: 1, 2].
+- `S.mean()` - Calculates the arithmetic mean ($\bar{S}$) across all 36 elements of $S$[cite: 1, 2].
+- `S[S > S_mean]` - Uses Boolean indexing to select values strictly greater than `S_mean` ($S > \bar{S}$)[cite: 1, 2].
+- `np.save("above_mean.npy", above_mean)` - Exports the array of selected elements into an `.npy` file[cite: 1, 2].
 
-Create a function named swap_bookends() that accepts a list containing at least two elements. Unpack the list into three variables:
-- first – the first element;
-- middle – a list containing everything between the first and last elements; and
-- last – the last element.
-Using these variables, return a new list in which the first and last elements have exchanged positions.
-The elements in middle must remain in their original order. Do not modify the input list.
-
-Example
-`swap_bookends([1, 2, 3, 4, 5, 6])` --> "[6, 2, 3, 4, 5, 1]"
-
-The following functions and methods were used in this problem:
-- `first, *middle, last = items`- An extended sequence unpacking used to extract the first element, the middle elements as a list, and the last element. Note that the asterisk `*` before the variable `middle` collects those middle elements into a single sublist.
-- `last, *middle, first` - A list unpacking used to construct and return a new list with the swapped bookends.
-
-
-Combining them all, the final function for this problem is as follows;
-
-
+### Implementation
 ```python
-def swap_bookends(items):
-    first, *middle, last = items
-    return [last, *middle, first]
+import numpy as np
+
+bintegers = np.arange(1, 37)
+S = bintegers**2
+S = np.reshape(S, (6, 6))
+
+S_mean = S.mean()
+above_mean = S[S > S_mean]
+
+np.save("above_mean.npy", above_mean)
 ```
-
-
 Thank you for reading! 
 
 To see the main python program for Programming Assignment 1, click this [link](https://github.com/imwithiu/SAMPANG-2ECE-C/blob/main/%5BSAMPANG%5D2ECE-C.ipynb) and download. Open on Jupyter Notebook, then run all cells.
